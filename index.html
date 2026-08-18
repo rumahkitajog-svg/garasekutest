@@ -30,110 +30,307 @@
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
 
-<script type="text/babel" data-presets="react">
-const { useState, useEffect, useMemo } = React;
-
+<script>
+const {
+  useState,
+  useEffect,
+  useMemo
+} = React;
 const PALETTE = {
-  bg: "#12161C", surface: "#1A2028", surface2: "#212A34", border: "#2A323D",
-  text: "#EDEFF3", textMuted: "#8B94A3", amber: "#F2A93B", teal: "#34C38F",
-  orange: "#E8823A", red: "#E1584A",
+  bg: "#12161C",
+  surface: "#1A2028",
+  surface2: "#212A34",
+  border: "#2A323D",
+  text: "#EDEFF3",
+  textMuted: "#8B94A3",
+  amber: "#F2A93B",
+  teal: "#34C38F",
+  orange: "#E8823A",
+  red: "#E1584A"
 };
-
 const STATUS = {
-  tersedia: { label: "Tersedia", color: PALETTE.teal, icon: "ti-circle-check" },
-  disewa: { label: "Disewa", color: PALETTE.orange, icon: "ti-clock" },
-  servis: { label: "Servis", color: PALETTE.red, icon: "ti-tool" },
+  tersedia: {
+    label: "Tersedia",
+    color: PALETTE.teal,
+    icon: "ti-circle-check"
+  },
+  disewa: {
+    label: "Disewa",
+    color: PALETTE.orange,
+    icon: "ti-clock"
+  },
+  servis: {
+    label: "Servis",
+    color: PALETTE.red,
+    icon: "ti-tool"
+  }
 };
-
 const STORAGE_KEY = "rental-motor-app-data";
-
-const seedMotors = [
-  { id: "m1", name: "Honda Beat", plate: "AB 1234 XY", type: "Matic", price: 75000, status: "tersedia", note: "" },
-  { id: "m2", name: "Yamaha NMAX", plate: "AB 5566 CD", type: "Matic Premium", price: 120000, status: "disewa", note: "" },
-  { id: "m3", name: "Honda Vario 125", plate: "AB 8890 QR", type: "Matic", price: 85000, status: "servis", note: "Ganti kampas rem" },
-];
-const seedRentals = [
-  { id: "r1", motorId: "m2", customer: "Dimas Prakoso", phone: "0812-3344-5566", start: "2026-08-15", end: "2026-08-20", total: 600000, status: "aktif" },
-];
-
+const seedMotors = [{
+  id: "m1",
+  name: "Honda Beat",
+  plate: "AB 1234 XY",
+  type: "Matic",
+  price: 75000,
+  status: "tersedia",
+  note: ""
+}, {
+  id: "m2",
+  name: "Yamaha NMAX",
+  plate: "AB 5566 CD",
+  type: "Matic Premium",
+  price: 120000,
+  status: "disewa",
+  note: ""
+}, {
+  id: "m3",
+  name: "Honda Vario 125",
+  plate: "AB 8890 QR",
+  type: "Matic",
+  price: 85000,
+  status: "servis",
+  note: "Ganti kampas rem"
+}];
+const seedRentals = [{
+  id: "r1",
+  motorId: "m2",
+  customer: "Dimas Prakoso",
+  phone: "0812-3344-5566",
+  start: "2026-08-15",
+  end: "2026-08-20",
+  total: 600000,
+  status: "aktif"
+}];
 const uid = () => Math.random().toString(36).slice(2, 9);
-const rupiah = (n) => "Rp" + Number(n || 0).toLocaleString("id-ID");
+const rupiah = n => "Rp" + Number(n || 0).toLocaleString("id-ID");
 const todayStr = () => new Date().toISOString().slice(0, 10);
-
-function Icon({ name, size = 14, color }) {
-  return <i className={"ti " + name} style={{ fontSize: size, color: color, lineHeight: 1 }}></i>;
+function Icon({
+  name,
+  size = 14,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("i", {
+    className: "ti " + name,
+    style: {
+      fontSize: size,
+      color: color,
+      lineHeight: 1
+    }
+  });
 }
-
-function PlateBadge({ children, size = "md" }) {
+function PlateBadge({
+  children,
+  size = "md"
+}) {
   const pad = size === "sm" ? "3px 8px" : "5px 12px";
   const fs = size === "sm" ? 11 : 13;
-  return (
-    <span style={{ display: "inline-block", background: "#0B0E12", color: PALETTE.amber, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "1.5px", fontWeight: 600, fontSize: fs, padding: pad, borderRadius: 4, border: "1px solid " + PALETTE.amber + "55" }}>
-      {children}
-    </span>
-  );
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-block",
+      background: "#0B0E12",
+      color: PALETTE.amber,
+      fontFamily: "'JetBrains Mono', monospace",
+      letterSpacing: "1.5px",
+      fontWeight: 600,
+      fontSize: fs,
+      padding: pad,
+      borderRadius: 4,
+      border: "1px solid " + PALETTE.amber + "55"
+    }
+  }, children);
 }
-
-function StatusPill({ status }) {
+function StatusPill({
+  status
+}) {
   const s = STATUS[status];
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: s.color, background: s.color + "1A", border: "1px solid " + s.color + "55", borderRadius: 20, padding: "3px 10px 3px 8px", fontSize: 12, fontWeight: 600 }}>
-      <Icon name={s.icon} size={13} /> {s.label}
-    </span>
-  );
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 5,
+      color: s.color,
+      background: s.color + "1A",
+      border: "1px solid " + s.color + "55",
+      borderRadius: 20,
+      padding: "3px 10px 3px 8px",
+      fontSize: 12,
+      fontWeight: 600
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: s.icon,
+    size: 13
+  }), " ", s.label);
 }
-
-function StatCard({ label, value, color, iconName }) {
-  return (
-    <div style={{ background: PALETTE.surface, border: "1px solid " + PALETTE.border, borderLeft: "3px solid " + color, borderRadius: 10, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", minWidth: 0 }}>
-      <div>
-        <div style={{ fontSize: 12, color: PALETTE.textMuted, marginBottom: 4 }}>{label}</div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: PALETTE.text, fontFamily: "'Barlow Condensed', sans-serif" }}>{value}</div>
-      </div>
-      <Icon name={iconName} size={22} color={color} />
-    </div>
-  );
+function StatCard({
+  label,
+  value,
+  color,
+  iconName
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: PALETTE.surface,
+      border: "1px solid " + PALETTE.border,
+      borderLeft: "3px solid " + color,
+      borderRadius: 10,
+      padding: "14px 16px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: PALETTE.textMuted,
+      marginBottom: 4
+    }
+  }, label), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 24,
+      fontWeight: 700,
+      color: PALETTE.text,
+      fontFamily: "'Barlow Condensed', sans-serif"
+    }
+  }, value)), /*#__PURE__*/React.createElement(Icon, {
+    name: iconName,
+    size: 22,
+    color: color
+  }));
 }
-
-function Modal({ title, onClose, children }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "#000000AA", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 16 }} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: PALETTE.surface, border: "1px solid " + PALETTE.border, borderRadius: 12, padding: 20, width: "100%", maxWidth: 440, maxHeight: "88vh", overflowY: "auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <h3 style={{ margin: 0, fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20, color: PALETTE.text, fontWeight: 600 }}>{title}</h3>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: PALETTE.textMuted, cursor: "pointer" }}><Icon name="ti-x" size={20} /></button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
+function Modal({
+  title,
+  onClose,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "#000000AA",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 50,
+      padding: 16
+    },
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: e => e.stopPropagation(),
+    style: {
+      background: PALETTE.surface,
+      border: "1px solid " + PALETTE.border,
+      borderRadius: 12,
+      padding: 20,
+      width: "100%",
+      maxWidth: 440,
+      maxHeight: "88vh",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: 0,
+      fontFamily: "'Barlow Condensed', sans-serif",
+      fontSize: 20,
+      color: PALETTE.text,
+      fontWeight: 600
+    }
+  }, title), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      background: "none",
+      border: "none",
+      color: PALETTE.textMuted,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-x",
+    size: 20
+  }))), children));
 }
-
-const inputStyle = { width: "100%", background: PALETTE.surface2, border: "1px solid " + PALETTE.border, borderRadius: 8, padding: "9px 11px", color: PALETTE.text, fontSize: 14, marginBottom: 12, boxSizing: "border-box", outline: "none" };
-const labelStyle = { fontSize: 12, color: PALETTE.textMuted, marginBottom: 5, display: "block", fontWeight: 500 };
-
-function Field({ label, ...props }) {
-  return (<div><label style={labelStyle}>{label}</label><input style={inputStyle} {...props} /></div>);
+const inputStyle = {
+  width: "100%",
+  background: PALETTE.surface2,
+  border: "1px solid " + PALETTE.border,
+  borderRadius: 8,
+  padding: "9px 11px",
+  color: PALETTE.text,
+  fontSize: 14,
+  marginBottom: 12,
+  boxSizing: "border-box",
+  outline: "none"
+};
+const labelStyle = {
+  fontSize: 12,
+  color: PALETTE.textMuted,
+  marginBottom: 5,
+  display: "block",
+  fontWeight: 500
+};
+function Field({
+  label,
+  ...props
+}) {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, label), /*#__PURE__*/React.createElement("input", {
+    style: inputStyle,
+    ...props
+  }));
 }
-
-function PrimaryButton({ children, onClick, full }) {
-  return (
-    <button onClick={onClick} style={{ background: PALETTE.amber, color: "#231604", border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", width: full ? "100%" : "auto", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-      {children}
-    </button>
-  );
+function PrimaryButton({
+  children,
+  onClick,
+  full
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    onClick: onClick,
+    style: {
+      background: PALETTE.amber,
+      color: "#231604",
+      border: "none",
+      borderRadius: 8,
+      padding: "10px 16px",
+      fontWeight: 700,
+      fontSize: 14,
+      cursor: "pointer",
+      width: full ? "100%" : "auto",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6
+    }
+  }, children);
 }
-
-function GhostButton({ children, onClick, danger }) {
-  return (
-    <button onClick={onClick} style={{ background: "transparent", color: danger ? PALETTE.red : PALETTE.textMuted, border: "1px solid " + (danger ? PALETTE.red + "55" : PALETTE.border), borderRadius: 8, padding: "7px 10px", fontSize: 13, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 5 }}>
-      {children}
-    </button>
-  );
+function GhostButton({
+  children,
+  onClick,
+  danger
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    onClick: onClick,
+    style: {
+      background: "transparent",
+      color: danger ? PALETTE.red : PALETTE.textMuted,
+      border: "1px solid " + (danger ? PALETTE.red + "55" : PALETTE.border),
+      borderRadius: 8,
+      padding: "7px 10px",
+      fontSize: 13,
+      cursor: "pointer",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 5
+    }
+  }, children);
 }
-
 function App() {
   const [motors, setMotors] = useState(seedMotors);
   const [rentals, setRentals] = useState(seedRentals);
@@ -145,38 +342,43 @@ function App() {
   const [sheetUrl, setSheetUrl] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState("");
-
   useEffect(() => {
     try {
       const savedUrl = localStorage.getItem("garaseku-sheet-url");
       if (savedUrl) setSheetUrl(savedUrl);
     } catch (e) {}
   }, []);
-
   function saveSheetUrl(url) {
     setSheetUrl(url);
-    try { localStorage.setItem("garaseku-sheet-url", url); } catch (e) {}
+    try {
+      localStorage.setItem("garaseku-sheet-url", url);
+    } catch (e) {}
   }
-
   async function syncToSheet() {
-    if (!sheetUrl) { setSyncMsg("Isi dulu URL web app-nya."); return; }
+    if (!sheetUrl) {
+      setSyncMsg("Isi dulu URL web app-nya.");
+      return;
+    }
     setSyncing(true);
     setSyncMsg("");
     try {
       const res = await fetch(sheetUrl, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ motors, rentals }),
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+          motors,
+          rentals
+        })
       });
       const data = await res.json();
-      if (data.ok) setSyncMsg("Tersinkron otomatis \u00b7 " + new Date().toLocaleTimeString("id-ID"));
-      else setSyncMsg("Gagal sinkron: respons tidak dikenali.");
+      if (data.ok) setSyncMsg("Tersinkron otomatis \u00b7 " + new Date().toLocaleTimeString("id-ID"));else setSyncMsg("Gagal sinkron: respons tidak dikenali.");
     } catch (e) {
       setSyncMsg("Gagal sinkron. Cek URL web app dan izin akses.");
     }
     setSyncing(false);
   }
-
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -188,56 +390,79 @@ function App() {
     } catch (e) {}
     setLoaded(true);
   }, []);
-
   useEffect(() => {
     if (!loaded) return;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ motors, rentals })); } catch (e) {}
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        motors,
+        rentals
+      }));
+    } catch (e) {}
   }, [motors, rentals, loaded]);
-
   useEffect(() => {
     if (!loaded || !sheetUrl) return;
-    const timer = setTimeout(() => { syncToSheet(); }, 1500);
+    const timer = setTimeout(() => {
+      syncToSheet();
+    }, 1500);
     return () => clearTimeout(timer);
   }, [motors, rentals, sheetUrl, loaded]);
-
   const stats = useMemo(() => ({
     total: motors.length,
-    tersedia: motors.filter((m) => m.status === "tersedia").length,
-    disewa: motors.filter((m) => m.status === "disewa").length,
-    servis: motors.filter((m) => m.status === "servis").length,
+    tersedia: motors.filter(m => m.status === "tersedia").length,
+    disewa: motors.filter(m => m.status === "disewa").length,
+    servis: motors.filter(m => m.status === "servis").length
   }), [motors]);
-
-  const activeRentals = rentals.filter((r) => r.status === "aktif");
-  const isOverdue = (r) => r.status === "aktif" && r.end < todayStr();
-  const filteredMotors = motors.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()) || m.plate.toLowerCase().includes(search.toLowerCase()));
-
+  const activeRentals = rentals.filter(r => r.status === "aktif");
+  const isOverdue = r => r.status === "aktif" && r.end < todayStr();
+  const filteredMotors = motors.filter(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.plate.toLowerCase().includes(search.toLowerCase()));
   function saveMotor(data) {
-    if (data.id) setMotors((prev) => prev.map((m) => (m.id === data.id ? data : m)));
-    else setMotors((prev) => [...prev, { ...data, id: uid() }]);
+    if (data.id) setMotors(prev => prev.map(m => m.id === data.id ? data : m));else setMotors(prev => [...prev, {
+      ...data,
+      id: uid()
+    }]);
     setMotorModal(null);
   }
   function deleteMotor(id) {
-    setMotors((prev) => prev.filter((m) => m.id !== id));
-    setRentals((prev) => prev.filter((r) => r.motorId !== id));
+    setMotors(prev => prev.filter(m => m.id !== id));
+    setRentals(prev => prev.filter(r => r.motorId !== id));
   }
   function saveRental(data) {
-    if (data.id) setRentals((prev) => prev.map((r) => (r.id === data.id ? data : r)));
-    else {
-      setRentals((prev) => [...prev, { ...data, id: uid(), status: "aktif" }]);
-      setMotors((prev) => prev.map((m) => (m.id === data.motorId ? { ...m, status: "disewa" } : m)));
+    if (data.id) setRentals(prev => prev.map(r => r.id === data.id ? data : r));else {
+      setRentals(prev => [...prev, {
+        ...data,
+        id: uid(),
+        status: "aktif"
+      }]);
+      setMotors(prev => prev.map(m => m.id === data.motorId ? {
+        ...m,
+        status: "disewa"
+      } : m));
     }
     setRentalModal(null);
   }
   function completeRental(rental) {
-    setRentals((prev) => prev.map((r) => (r.id === rental.id ? { ...r, status: "selesai" } : r)));
-    setMotors((prev) => prev.map((m) => (m.id === rental.motorId ? { ...m, status: "tersedia" } : m)));
+    setRentals(prev => prev.map(r => r.id === rental.id ? {
+      ...r,
+      status: "selesai"
+    } : r));
+    setMotors(prev => prev.map(m => m.id === rental.motorId ? {
+      ...m,
+      status: "tersedia"
+    } : m));
   }
-  function deleteRental(id) { setRentals((prev) => prev.filter((r) => r.id !== id)); }
-  const motorById = (id) => motors.find((m) => m.id === id);
-
+  function deleteRental(id) {
+    setRentals(prev => prev.filter(r => r.id !== id));
+  }
+  const motorById = id => motors.find(m => m.id === id);
   function exportData() {
-    const payload = JSON.stringify({ motors, rentals, exportedAt: new Date().toISOString() }, null, 2);
-    const blob = new Blob([payload], { type: "application/json" });
+    const payload = JSON.stringify({
+      motors,
+      rentals,
+      exportedAt: new Date().toISOString()
+    }, null, 2);
+    const blob = new Blob([payload], {
+      type: "application/json"
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -247,13 +472,12 @@ function App() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
   const fileInputRef = React.useRef(null);
   function importData(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = ev => {
       try {
         const parsed = JSON.parse(ev.target.result);
         if (!Array.isArray(parsed.motors) || !Array.isArray(parsed.rentals)) throw new Error("format salah");
@@ -268,225 +492,739 @@ function App() {
     reader.readAsText(file);
     e.target.value = "";
   }
-
-  return (
-    <div style={{ fontFamily: "'Inter', sans-serif", background: PALETTE.bg, color: PALETTE.text, minHeight: "100vh", padding: "20px 16px 40px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ background: PALETTE.amber, borderRadius: 8, width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="ti-motorbike" size={19} color="#231604" />
-            </div>
-            <div>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 22, fontWeight: 700, lineHeight: 1 }}>GaraseKu</div>
-              <div style={{ fontSize: 11, color: PALETTE.textMuted, letterSpacing: 1 }}>MANAJEMEN ARMADA RENTAL</div>
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 6, background: PALETTE.surface, padding: 4, borderRadius: 10, border: "1px solid " + PALETTE.border }}>
-            {[{ id: "dashboard", label: "Dasbor", icon: "ti-gauge" }, { id: "armada", label: "Armada", icon: "ti-layout-grid" }, { id: "sewa", label: "Sewa", icon: "ti-clipboard-list" }].map((t) => {
-              const active = tab === t.id;
-              return (
-                <button key={t.id} onClick={() => setTab(t.id)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: active ? PALETTE.amber : "transparent", color: active ? "#231604" : PALETTE.textMuted }}>
-                  <Icon name={t.icon} size={14} color={active ? "#231604" : PALETTE.textMuted} /> {t.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-          <GhostButton onClick={exportData}><Icon name="ti-download" size={13} /> Unduh cadangan</GhostButton>
-          <GhostButton onClick={() => fileInputRef.current && fileInputRef.current.click()}><Icon name="ti-upload" size={13} /> Pulihkan dari file</GhostButton>
-          <input ref={fileInputRef} type="file" accept="application/json" onChange={importData} style={{ display: "none" }} />
-        </div>
-
-        <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center", background: PALETTE.surface, border: "1px solid " + PALETTE.border, borderRadius: 10, padding: 10 }}>
-          <Icon name="ti-brand-google-drive" size={15} color={PALETTE.textMuted} />
-          <input
-            placeholder="Tempel URL web app Google Apps Script di sini"
-            value={sheetUrl}
-            onChange={(e) => saveSheetUrl(e.target.value)}
-            style={{ ...inputStyle, marginBottom: 0, flex: 1, minWidth: 180 }}
-          />
-          {sheetUrl && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: PALETTE.teal, background: PALETTE.teal + "1A", padding: "5px 10px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}>
-              <Icon name={syncing ? "ti-refresh" : "ti-circle-check"} size={12} color={PALETTE.teal} /> {syncing ? "Menyinkronkan..." : "Auto-sync aktif"}
-            </span>
-          )}
-          {syncMsg && <div style={{ width: "100%", fontSize: 12, color: syncMsg.startsWith("Tersinkron") ? PALETTE.teal : PALETTE.red }}>{syncMsg}</div>}
-        </div>
-
-        {tab === "dashboard" && (
-          <div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 20 }}>
-              <StatCard label="Total armada" value={stats.total} color={PALETTE.text} iconName="ti-motorbike" />
-              <StatCard label="Tersedia" value={stats.tersedia} color={PALETTE.teal} iconName="ti-circle-check" />
-              <StatCard label="Sedang disewa" value={stats.disewa} color={PALETTE.orange} iconName="ti-clock" />
-              <StatCard label="Dalam servis" value={stats.servis} color={PALETTE.red} iconName="ti-tool" />
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: PALETTE.textMuted, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>Sewa aktif</div>
-            {activeRentals.length === 0 && <div style={{ color: PALETTE.textMuted, fontSize: 14, padding: "20px 0" }}>Belum ada sewa aktif saat ini.</div>}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {activeRentals.map((r) => {
-                const m = motorById(r.motorId);
-                const overdue = isOverdue(r);
-                return (
-                  <div key={r.id} style={{ background: PALETTE.surface, border: "1px solid " + (overdue ? PALETTE.red : PALETTE.border), borderRadius: 10, padding: "12px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                      <PlateBadge size="sm">{m ? m.plate : "-"}</PlateBadge>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: 14 }}>{r.customer}</div>
-                        <div style={{ fontSize: 12, color: PALETTE.textMuted }}>
-                          {m ? m.name : "Motor dihapus"} · {r.start} s/d {r.end}
-                          {overdue && <span style={{ color: PALETTE.red, fontWeight: 700 }}> · TELAT KEMBALI</span>}
-                        </div>
-                      </div>
-                    </div>
-                    <GhostButton onClick={() => completeRental(r)}><Icon name="ti-circle-check" size={13} /> Tandai kembali</GhostButton>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {tab === "armada" && (
-          <div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
-              <div style={{ position: "relative", flex: 1, minWidth: 180 }}>
-                <span style={{ position: "absolute", left: 10, top: 11 }}><Icon name="ti-search" size={14} color={PALETTE.textMuted} /></span>
-                <input placeholder="Cari nama atau plat nomor..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...inputStyle, marginBottom: 0, paddingLeft: 30 }} />
-              </div>
-              <PrimaryButton onClick={() => setMotorModal("new")}><Icon name="ti-plus" size={15} color="#231604" /> Tambah motor</PrimaryButton>
-            </div>
-            {filteredMotors.length === 0 && <div style={{ color: PALETTE.textMuted, fontSize: 14, padding: "24px 0", textAlign: "center" }}>Tidak ada motor yang cocok.</div>}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 12 }}>
-              {filteredMotors.map((m) => (
-                <div key={m.id} style={{ background: PALETTE.surface, border: "1px solid " + PALETTE.border, borderRadius: 12, padding: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 16 }}>{m.name}</div>
-                      <div style={{ fontSize: 12, color: PALETTE.textMuted }}>{m.type}</div>
-                    </div>
-                    <StatusPill status={m.status} />
-                  </div>
-                  <PlateBadge>{m.plate}</PlateBadge>
-                  <div style={{ marginTop: 10, fontSize: 14, fontWeight: 600, color: PALETTE.amber }}>{rupiah(m.price)} <span style={{ color: PALETTE.textMuted, fontWeight: 400, fontSize: 12 }}>/ hari</span></div>
-                  {m.note && <div style={{ fontSize: 12, color: PALETTE.textMuted, marginTop: 6 }}>Catatan: {m.note}</div>}
-                  <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
-                    <GhostButton onClick={() => setMotorModal(m)}><Icon name="ti-pencil" size={12} /> Ubah</GhostButton>
-                    <GhostButton danger onClick={() => deleteMotor(m.id)}><Icon name="ti-trash" size={12} /> Hapus</GhostButton>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {tab === "sewa" && (
-          <div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}>
-              <PrimaryButton onClick={() => setRentalModal("new")}><Icon name="ti-plus" size={15} color="#231604" /> Catat sewa baru</PrimaryButton>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {rentals.length === 0 && <div style={{ color: PALETTE.textMuted, fontSize: 14, padding: "24px 0", textAlign: "center" }}>Belum ada riwayat sewa.</div>}
-              {[...rentals].reverse().map((r) => {
-                const m = motorById(r.motorId);
-                const overdue = isOverdue(r);
-                return (
-                  <div key={r.id} style={{ background: PALETTE.surface, border: "1px solid " + (overdue ? PALETTE.red : PALETTE.border), borderRadius: 10, padding: 14 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
-                      <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                        <PlateBadge size="sm">{m ? m.plate : "-"}</PlateBadge>
-                        <div>
-                          <div style={{ fontWeight: 600 }}>{r.customer}</div>
-                          <div style={{ fontSize: 12, color: PALETTE.textMuted, display: "flex", alignItems: "center", gap: 4 }}><Icon name="ti-phone" size={11} /> {r.phone || "-"}</div>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, color: r.status === "aktif" ? PALETTE.orange : PALETTE.teal, background: (r.status === "aktif" ? PALETTE.orange : PALETTE.teal) + "1A" }}>
-                        {r.status === "aktif" ? "AKTIF" : "SELESAI"}
-                      </span>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: PALETTE.textMuted, marginTop: 10 }}>
-                      <Icon name="ti-calendar" size={12} /> {r.start} → {r.end}
-                      {overdue && <span style={{ color: PALETTE.red, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 3 }}><Icon name="ti-alert-triangle" size={12} color={PALETTE.red} /> Telat kembali</span>}
-                    </div>
-                    <div style={{ marginTop: 8, fontWeight: 700, color: PALETTE.amber }}>{rupiah(r.total)}</div>
-                    <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
-                      {r.status === "aktif" && <GhostButton onClick={() => completeRental(r)}><Icon name="ti-circle-check" size={12} /> Tandai kembali</GhostButton>}
-                      <GhostButton danger onClick={() => deleteRental(r.id)}><Icon name="ti-trash" size={12} /> Hapus</GhostButton>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {motorModal && <MotorForm initial={motorModal === "new" ? null : motorModal} onClose={() => setMotorModal(null)} onSave={saveMotor} />}
-      {rentalModal && <RentalForm motors={motors.filter((m) => m.status === "tersedia" || (rentalModal !== "new" && m.id === rentalModal.motorId))} initial={rentalModal === "new" ? null : rentalModal} onClose={() => setRentalModal(null)} onSave={saveRental} />}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: "'Inter', sans-serif",
+      background: PALETTE.bg,
+      color: PALETTE.text,
+      minHeight: "100vh",
+      padding: "20px 16px 40px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 900,
+      margin: "0 auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 18,
+      flexWrap: "wrap",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: PALETTE.amber,
+      borderRadius: 8,
+      width: 34,
+      height: 34,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-motorbike",
+    size: 19,
+    color: "#231604"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: "'Barlow Condensed', sans-serif",
+      fontSize: 22,
+      fontWeight: 700,
+      lineHeight: 1
+    }
+  }, "GaraseKu"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: PALETTE.textMuted,
+      letterSpacing: 1
+    }
+  }, "MANAJEMEN ARMADA RENTAL"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      background: PALETTE.surface,
+      padding: 4,
+      borderRadius: 10,
+      border: "1px solid " + PALETTE.border
+    }
+  }, [{
+    id: "dashboard",
+    label: "Dasbor",
+    icon: "ti-gauge"
+  }, {
+    id: "armada",
+    label: "Armada",
+    icon: "ti-layout-grid"
+  }, {
+    id: "sewa",
+    label: "Sewa",
+    icon: "ti-clipboard-list"
+  }].map(t => {
+    const active = tab === t.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: t.id,
+      onClick: () => setTab(t.id),
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "7px 12px",
+        borderRadius: 7,
+        border: "none",
+        cursor: "pointer",
+        fontSize: 13,
+        fontWeight: 600,
+        background: active ? PALETTE.amber : "transparent",
+        color: active ? "#231604" : PALETTE.textMuted
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: t.icon,
+      size: 14,
+      color: active ? "#231604" : PALETTE.textMuted
+    }), " ", t.label);
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: 8,
+      marginBottom: 8,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement(GhostButton, {
+    onClick: exportData
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-download",
+    size: 13
+  }), " Unduh cadangan"), /*#__PURE__*/React.createElement(GhostButton, {
+    onClick: () => fileInputRef.current && fileInputRef.current.click()
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-upload",
+    size: 13
+  }), " Pulihkan dari file"), /*#__PURE__*/React.createElement("input", {
+    ref: fileInputRef,
+    type: "file",
+    accept: "application/json",
+    onChange: importData,
+    style: {
+      display: "none"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 16,
+      flexWrap: "wrap",
+      alignItems: "center",
+      background: PALETTE.surface,
+      border: "1px solid " + PALETTE.border,
+      borderRadius: 10,
+      padding: 10
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-brand-google-drive",
+    size: 15,
+    color: PALETTE.textMuted
+  }), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Tempel URL web app Google Apps Script di sini",
+    value: sheetUrl,
+    onChange: e => saveSheetUrl(e.target.value),
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      flex: 1,
+      minWidth: 180
+    }
+  }), sheetUrl && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      fontWeight: 600,
+      color: PALETTE.teal,
+      background: PALETTE.teal + "1A",
+      padding: "5px 10px",
+      borderRadius: 20,
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 4,
+      whiteSpace: "nowrap"
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: syncing ? "ti-refresh" : "ti-circle-check",
+    size: 12,
+    color: PALETTE.teal
+  }), " ", syncing ? "Menyinkronkan..." : "Auto-sync aktif"), syncMsg && /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: "100%",
+      fontSize: 12,
+      color: syncMsg.startsWith("Tersinkron") ? PALETTE.teal : PALETTE.red
+    }
+  }, syncMsg)), tab === "dashboard" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+      gap: 10,
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(StatCard, {
+    label: "Total armada",
+    value: stats.total,
+    color: PALETTE.text,
+    iconName: "ti-motorbike"
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Tersedia",
+    value: stats.tersedia,
+    color: PALETTE.teal,
+    iconName: "ti-circle-check"
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Sedang disewa",
+    value: stats.disewa,
+    color: PALETTE.orange,
+    iconName: "ti-clock"
+  }), /*#__PURE__*/React.createElement(StatCard, {
+    label: "Dalam servis",
+    value: stats.servis,
+    color: PALETTE.red,
+    iconName: "ti-tool"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 600,
+      color: PALETTE.textMuted,
+      marginBottom: 8,
+      textTransform: "uppercase",
+      letterSpacing: 0.5
+    }
+  }, "Sewa aktif"), activeRentals.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: PALETTE.textMuted,
+      fontSize: 14,
+      padding: "20px 0"
+    }
+  }, "Belum ada sewa aktif saat ini."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, activeRentals.map(r => {
+    const m = motorById(r.motorId);
+    const overdue = isOverdue(r);
+    return /*#__PURE__*/React.createElement("div", {
+      key: r.id,
+      style: {
+        background: PALETTE.surface,
+        border: "1px solid " + (overdue ? PALETTE.red : PALETTE.border),
+        borderRadius: 10,
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        flexWrap: "wrap"
+      }
+    }, /*#__PURE__*/React.createElement(PlateBadge, {
+      size: "sm"
+    }, m ? m.plate : "-"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600,
+        fontSize: 14
+      }
+    }, r.customer), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: PALETTE.textMuted
+      }
+    }, m ? m.name : "Motor dihapus", " · ", r.start, " s/d ", r.end, overdue && /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: PALETTE.red,
+        fontWeight: 700
+      }
+    }, " · TELAT KEMBALI")))), /*#__PURE__*/React.createElement(GhostButton, {
+      onClick: () => completeRental(r)
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-circle-check",
+      size: 13
+    }), " Tandai kembali"));
+  }))), tab === "armada" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 14,
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      flex: 1,
+      minWidth: 180
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "absolute",
+      left: 10,
+      top: 11
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-search",
+    size: 14,
+    color: PALETTE.textMuted
+  })), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Cari nama atau plat nomor...",
+    value: search,
+    onChange: e => setSearch(e.target.value),
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      paddingLeft: 30
+    }
+  })), /*#__PURE__*/React.createElement(PrimaryButton, {
+    onClick: () => setMotorModal("new")
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-plus",
+    size: 15,
+    color: "#231604"
+  }), " Tambah motor")), filteredMotors.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: PALETTE.textMuted,
+      fontSize: 14,
+      padding: "24px 0",
+      textAlign: "center"
+    }
+  }, "Tidak ada motor yang cocok."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
+      gap: 12
+    }
+  }, filteredMotors.map(m => /*#__PURE__*/React.createElement("div", {
+    key: m.id,
+    style: {
+      background: PALETTE.surface,
+      border: "1px solid " + PALETTE.border,
+      borderRadius: 12,
+      padding: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 16
+    }
+  }, m.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: PALETTE.textMuted
+    }
+  }, m.type)), /*#__PURE__*/React.createElement(StatusPill, {
+    status: m.status
+  })), /*#__PURE__*/React.createElement(PlateBadge, null, m.plate), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 14,
+      fontWeight: 600,
+      color: PALETTE.amber
+    }
+  }, rupiah(m.price), " ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: PALETTE.textMuted,
+      fontWeight: 400,
+      fontSize: 12
+    }
+  }, "/ hari")), m.note && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: PALETTE.textMuted,
+      marginTop: 6
+    }
+  }, "Catatan: ", m.note), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement(GhostButton, {
+    onClick: () => setMotorModal(m)
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-pencil",
+    size: 12
+  }), " Ubah"), /*#__PURE__*/React.createElement(GhostButton, {
+    danger: true,
+    onClick: () => deleteMotor(m.id)
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-trash",
+    size: 12
+  }), " Hapus")))))), tab === "sewa" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "flex-end",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement(PrimaryButton, {
+    onClick: () => setRentalModal("new")
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ti-plus",
+    size: 15,
+    color: "#231604"
+  }), " Catat sewa baru")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, rentals.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: PALETTE.textMuted,
+      fontSize: 14,
+      padding: "24px 0",
+      textAlign: "center"
+    }
+  }, "Belum ada riwayat sewa."), [...rentals].reverse().map(r => {
+    const m = motorById(r.motorId);
+    const overdue = isOverdue(r);
+    return /*#__PURE__*/React.createElement("div", {
+      key: r.id,
+      style: {
+        background: PALETTE.surface,
+        border: "1px solid " + (overdue ? PALETTE.red : PALETTE.border),
+        borderRadius: 10,
+        padding: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 12,
+        alignItems: "center",
+        flexWrap: "wrap"
+      }
+    }, /*#__PURE__*/React.createElement(PlateBadge, {
+      size: "sm"
+    }, m ? m.plate : "-"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 600
+      }
+    }, r.customer), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: PALETTE.textMuted,
+        display: "flex",
+        alignItems: "center",
+        gap: 4
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-phone",
+      size: 11
+    }), " ", r.phone || "-"))), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        fontWeight: 700,
+        padding: "3px 9px",
+        borderRadius: 20,
+        color: r.status === "aktif" ? PALETTE.orange : PALETTE.teal,
+        background: (r.status === "aktif" ? PALETTE.orange : PALETTE.teal) + "1A"
+      }
+    }, r.status === "aktif" ? "AKTIF" : "SELESAI")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        fontSize: 12,
+        color: PALETTE.textMuted,
+        marginTop: 10
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-calendar",
+      size: 12
+    }), " ", r.start, " → ", r.end, overdue && /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: PALETTE.red,
+        fontWeight: 700,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3
+      }
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-alert-triangle",
+      size: 12,
+      color: PALETTE.red
+    }), " Telat kembali")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 8,
+        fontWeight: 700,
+        color: PALETTE.amber
+      }
+    }, rupiah(r.total)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 6,
+        marginTop: 10
+      }
+    }, r.status === "aktif" && /*#__PURE__*/React.createElement(GhostButton, {
+      onClick: () => completeRental(r)
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-circle-check",
+      size: 12
+    }), " Tandai kembali"), /*#__PURE__*/React.createElement(GhostButton, {
+      danger: true,
+      onClick: () => deleteRental(r.id)
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "ti-trash",
+      size: 12
+    }), " Hapus")));
+  })))), motorModal && /*#__PURE__*/React.createElement(MotorForm, {
+    initial: motorModal === "new" ? null : motorModal,
+    onClose: () => setMotorModal(null),
+    onSave: saveMotor
+  }), rentalModal && /*#__PURE__*/React.createElement(RentalForm, {
+    motors: motors.filter(m => m.status === "tersedia" || rentalModal !== "new" && m.id === rentalModal.motorId),
+    initial: rentalModal === "new" ? null : rentalModal,
+    onClose: () => setRentalModal(null),
+    onSave: saveRental
+  }));
 }
-
-function MotorForm({ initial, onClose, onSave }) {
-  const [form, setForm] = useState(initial || { name: "", plate: "", type: "Matic", price: "", status: "tersedia", note: "" });
+function MotorForm({
+  initial,
+  onClose,
+  onSave
+}) {
+  const [form, setForm] = useState(initial || {
+    name: "",
+    plate: "",
+    type: "Matic",
+    price: "",
+    status: "tersedia",
+    note: ""
+  });
   const [error, setError] = useState("");
   function submit() {
-    if (!form.name.trim() || !form.plate.trim() || !form.price) { setError("Nama, plat nomor, dan harga wajib diisi."); return; }
-    onSave({ ...form, price: Number(form.price) });
+    if (!form.name.trim() || !form.plate.trim() || !form.price) {
+      setError("Nama, plat nomor, dan harga wajib diisi.");
+      return;
+    }
+    onSave({
+      ...form,
+      price: Number(form.price)
+    });
   }
-  return (
-    <Modal title={initial ? "Ubah motor" : "Tambah motor"} onClose={onClose}>
-      <Field label="Nama motor" placeholder="Honda Beat" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-      <Field label="Plat nomor" placeholder="AB 1234 XY" value={form.plate} onChange={(e) => setForm({ ...form, plate: e.target.value.toUpperCase() })} />
-      <Field label="Tipe" placeholder="Matic / Manual" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} />
-      <Field label="Harga per hari (Rp)" type="number" placeholder="75000" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-      <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Status</label>
-        <select style={inputStyle} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-          {Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
-      </div>
-      <Field label="Catatan (opsional)" placeholder="Ganti oli, dsb." value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
-      {error && <div style={{ color: PALETTE.red, fontSize: 12, marginBottom: 10 }}>{error}</div>}
-      <PrimaryButton full onClick={submit}>{initial ? "Simpan perubahan" : "Tambah ke armada"}</PrimaryButton>
-    </Modal>
-  );
+  return /*#__PURE__*/React.createElement(Modal, {
+    title: initial ? "Ubah motor" : "Tambah motor",
+    onClose: onClose
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Nama motor",
+    placeholder: "Honda Beat",
+    value: form.name,
+    onChange: e => setForm({
+      ...form,
+      name: e.target.value
+    })
+  }), /*#__PURE__*/React.createElement(Field, {
+    label: "Plat nomor",
+    placeholder: "AB 1234 XY",
+    value: form.plate,
+    onChange: e => setForm({
+      ...form,
+      plate: e.target.value.toUpperCase()
+    })
+  }), /*#__PURE__*/React.createElement(Field, {
+    label: "Tipe",
+    placeholder: "Matic / Manual",
+    value: form.type,
+    onChange: e => setForm({
+      ...form,
+      type: e.target.value
+    })
+  }), /*#__PURE__*/React.createElement(Field, {
+    label: "Harga per hari (Rp)",
+    type: "number",
+    placeholder: "75000",
+    value: form.price,
+    onChange: e => setForm({
+      ...form,
+      price: e.target.value
+    })
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Status"), /*#__PURE__*/React.createElement("select", {
+    style: inputStyle,
+    value: form.status,
+    onChange: e => setForm({
+      ...form,
+      status: e.target.value
+    })
+  }, Object.entries(STATUS).map(([k, v]) => /*#__PURE__*/React.createElement("option", {
+    key: k,
+    value: k
+  }, v.label)))), /*#__PURE__*/React.createElement(Field, {
+    label: "Catatan (opsional)",
+    placeholder: "Ganti oli, dsb.",
+    value: form.note,
+    onChange: e => setForm({
+      ...form,
+      note: e.target.value
+    })
+  }), error && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: PALETTE.red,
+      fontSize: 12,
+      marginBottom: 10
+    }
+  }, error), /*#__PURE__*/React.createElement(PrimaryButton, {
+    full: true,
+    onClick: submit
+  }, initial ? "Simpan perubahan" : "Tambah ke armada"));
 }
-
-function RentalForm({ motors, initial, onClose, onSave }) {
-  const [form, setForm] = useState(initial || { motorId: motors[0] ? motors[0].id : "", customer: "", phone: "", start: todayStr(), end: todayStr(), total: "" });
+function RentalForm({
+  motors,
+  initial,
+  onClose,
+  onSave
+}) {
+  const [form, setForm] = useState(initial || {
+    motorId: motors[0] ? motors[0].id : "",
+    customer: "",
+    phone: "",
+    start: todayStr(),
+    end: todayStr(),
+    total: ""
+  });
   const [error, setError] = useState("");
   function submit() {
-    if (!form.motorId || !form.customer.trim() || !form.start || !form.end || !form.total) { setError("Motor, nama penyewa, tanggal, dan total wajib diisi."); return; }
-    if (form.end < form.start) { setError("Tanggal selesai tidak boleh sebelum tanggal mulai."); return; }
-    onSave({ ...form, total: Number(form.total) });
+    if (!form.motorId || !form.customer.trim() || !form.start || !form.end || !form.total) {
+      setError("Motor, nama penyewa, tanggal, dan total wajib diisi.");
+      return;
+    }
+    if (form.end < form.start) {
+      setError("Tanggal selesai tidak boleh sebelum tanggal mulai.");
+      return;
+    }
+    onSave({
+      ...form,
+      total: Number(form.total)
+    });
   }
-  return (
-    <Modal title={initial ? "Ubah sewa" : "Catat sewa baru"} onClose={onClose}>
-      <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Motor</label>
-        <select style={inputStyle} value={form.motorId} onChange={(e) => setForm({ ...form, motorId: e.target.value })}>
-          {motors.length === 0 && <option value="">Tidak ada motor tersedia</option>}
-          {motors.map((m) => <option key={m.id} value={m.id}>{m.name} — {m.plate}</option>)}
-        </select>
-      </div>
-      <Field label="Nama penyewa" placeholder="Nama lengkap" value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} />
-      <Field label="No. telepon" placeholder="0812-xxxx-xxxx" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-      <div style={{ display: "flex", gap: 10 }}>
-        <div style={{ flex: 1 }}><label style={labelStyle}>Mulai</label><input type="date" style={inputStyle} value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} /></div>
-        <div style={{ flex: 1 }}><label style={labelStyle}>Selesai</label><input type="date" style={inputStyle} value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} /></div>
-      </div>
-      <Field label="Total biaya (Rp)" type="number" placeholder="300000" value={form.total} onChange={(e) => setForm({ ...form, total: e.target.value })} />
-      {error && <div style={{ color: PALETTE.red, fontSize: 12, marginBottom: 10 }}>{error}</div>}
-      <PrimaryButton full onClick={submit}>{initial ? "Simpan perubahan" : "Catat sewa"}</PrimaryButton>
-    </Modal>
-  );
+  return /*#__PURE__*/React.createElement(Modal, {
+    title: initial ? "Ubah sewa" : "Catat sewa baru",
+    onClose: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Motor"), /*#__PURE__*/React.createElement("select", {
+    style: inputStyle,
+    value: form.motorId,
+    onChange: e => setForm({
+      ...form,
+      motorId: e.target.value
+    })
+  }, motors.length === 0 && /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Tidak ada motor tersedia"), motors.map(m => /*#__PURE__*/React.createElement("option", {
+    key: m.id,
+    value: m.id
+  }, m.name, " — ", m.plate)))), /*#__PURE__*/React.createElement(Field, {
+    label: "Nama penyewa",
+    placeholder: "Nama lengkap",
+    value: form.customer,
+    onChange: e => setForm({
+      ...form,
+      customer: e.target.value
+    })
+  }), /*#__PURE__*/React.createElement(Field, {
+    label: "No. telepon",
+    placeholder: "0812-xxxx-xxxx",
+    value: form.phone,
+    onChange: e => setForm({
+      ...form,
+      phone: e.target.value
+    })
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Mulai"), /*#__PURE__*/React.createElement("input", {
+    type: "date",
+    style: inputStyle,
+    value: form.start,
+    onChange: e => setForm({
+      ...form,
+      start: e.target.value
+    })
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Selesai"), /*#__PURE__*/React.createElement("input", {
+    type: "date",
+    style: inputStyle,
+    value: form.end,
+    onChange: e => setForm({
+      ...form,
+      end: e.target.value
+    })
+  }))), /*#__PURE__*/React.createElement(Field, {
+    label: "Total biaya (Rp)",
+    type: "number",
+    placeholder: "300000",
+    value: form.total,
+    onChange: e => setForm({
+      ...form,
+      total: e.target.value
+    })
+  }), error && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: PALETTE.red,
+      fontSize: 12,
+      marginBottom: 10
+    }
+  }, error), /*#__PURE__*/React.createElement(PrimaryButton, {
+    full: true,
+    onClick: submit
+  }, initial ? "Simpan perubahan" : "Catat sewa"));
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
 </script>
 
 <script>
